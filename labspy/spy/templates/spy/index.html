@@ -1,10 +1,20 @@
 {% extends "spy/layout.html" %}
+{% load static %}
 
 {% block title %}
     LabSpy
 {% endblock %}
 
 {% block body %}
-    <h1>LabSpy</h1>
-    <h2>Smart tools for smarter labs</h2>
+
+    <div class="title-bar">
+        <img src="{% static 'spy/labspy-mark-nobg.png' %}" alt="LabSpy Mark" class="logo">
+    </div>
+
+    <div class="container"> 
+        <h1 class="title">LabSpy</h1>
+        <h2 class="subtitle">Smart tools for smarter labs</h2>
+    </div>
+
+
 {% endblock %}
