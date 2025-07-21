@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabSpy - Biotech Lab Resource Management</title>
+    <link rel="stylesheet" href="{% static 'spy/styles2.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'spy/labspy-logo.png' %}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <img src="{% static 'spy/labspy-mark-nobg.png' %}" alt="LabSpy" class="logo">
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#demo" class="nav-link btn-primary">Get Demo</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">Smart tools for smarter labs</h1>
+                </div>
+                <div class="hero-image">
+                    <img src="{% static 'spy/labspy-logo.png' %}" alt="LabSpy Mouse Logo" class="mouse-logo">
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Built by Scientists, for Scientists</h2>
+                    <p>LabSpy was created by a team of experienced researchers who understand the unique challenges of managing biotech laboratory resources. Our platform combines scientific expertise with cutting-edge technology to deliver solutions that actually work in real lab environments.</p>
+                    <ul class="about-list">
+                        <li>✓ Trusted by 500+ biotech labs worldwide</li>
+                        <li>✓ 99.9% uptime reliability</li>
+                        <li>✓ 24/7 expert support</li>
+                        <li>✓ HIPAA and GLP compliant</li>
+                    </ul>
+                </div>
+                <div class="about-stats">
+                    <div class="stat">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Labs Using LabSpy</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">50%</div>
+                        <div class="stat-label">Time Saved on Admin</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">System Uptime</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Powerful Features for Modern Labs</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔬</div>
+                    <h3>Equipment Tracking</h3>
+                    <p>Monitor all lab equipment status, maintenance schedules, and usage patterns in real-time.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Inventory Management</h3>
+                    <p>Keep track of reagents, samples, and supplies with automated reorder alerts and expiration tracking.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Team Collaboration</h3>
+                    <p>Coordinate research teams, share protocols, and manage project timelines efficiently.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Analytics & Reporting</h3>
+                    <p>Generate detailed reports on lab productivity, resource utilization, and cost optimization.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Compliance Ready</h3>
+                    <p>Ensure regulatory compliance with built-in audit trails and documentation management.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Workflow Automation</h3>
+                    <p>Automate routine tasks and streamline lab processes to focus on what matters most - research.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- CTA Section -->
+    <section id="demo" class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Transform Your Lab?</h2>
+                <p>Join hundreds of biotech labs already using LabSpy to streamline their operations and accelerate research.</p>
+                <form class="cta-form">
+                    <input type="email" placeholder="Enter your work email" class="email-input" required>
+                    <button type="submit" class="btn btn-primary">Get Started Free</button>
+                </form>
+                <p class="cta-note">No credit card required • 14-day free trial • Setup in minutes</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="assets/labspy-mark-nobg.png" alt="LabSpy" class="footer-logo">
+                    <p>Streamlining biotech lab operations worldwide.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="#features">Features</a></li>
+                            <li><a href="#demo">Pricing</a></li>
+                            <li><a href="#demo">Demo</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                            <li><a href="#contact">Support</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Contact</h4>
+                        <ul>
+                            <li>hello@labspy.com</li>
+                            <li>1-800-LABSPY1</li>
+                            <li>San Francisco, CA</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 LabSpy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'spy/script2.js' %}"></script>
+</body>
+</html>
