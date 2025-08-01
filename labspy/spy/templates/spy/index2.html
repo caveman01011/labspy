@@ -3,10 +3,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">      
     <title>LabSpy - Biotech Lab Resource Management</title>
     <link rel="stylesheet" href="{% static 'spy/styles2.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'spy/labspy-logo.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 </head>
 <body>
     <!-- Header -->
@@ -19,7 +21,7 @@
                 <li><a href="#features" class="nav-link">Features</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
-                <li><a href="#demo" class="nav-link btn-primary">Get Demo</a></li>
+                <li><a href="#demo" class="btn btn-outline-primary">Get Demo</a></li>
             </ul>
             <div class="hamburger">
                 <span></span>
@@ -49,22 +51,27 @@
             <div class="about-content">
                 <div class="about-text">
                     <h2>Built by Scientists, for Scientists</h2>
-                    <p>LabSpy was created by a team of experienced researchers who understand the unique challenges of managing biotech laboratory resources. Our platform combines scientific expertise with cutting-edge technology to deliver solutions that actually work in real lab environments.</p>
+                    <p>Simplify your inventory. Track your equipment. Focus on your science.
+LabSpy is a modern lab inventory system built for Tunisian biotech and research teams. From reagents to freezers, LabSpy helps you organize supplies, avoid stockouts, and streamline your lab operations — all in one easy-to-use platform, designed with local labs in mind.</p>
                     <ul class="about-list">
-                        <li>✓ Trusted by 500+ biotech labs worldwide</li>
-                        <li>✓ 99.9% uptime reliability</li>
+                        <li>✓ Trusted by major Tunisian biotech labs</li>
                         <li>✓ 24/7 expert support</li>
-                        <li>✓ HIPAA and GLP compliant</li>
+                        <li>✓ Tunisian regulations compliant</li>
                     </ul>
                 </div>
                 <div class="about-stats">
                     <div class="stat">
-                        <div class="stat-number">500+</div>
-                        <div class="stat-label">Labs Using LabSpy</div>
+                        <div class="stat-number"><img style="border-radius: 10%;" src="{% static 'spy/tunisia-flag-png-xl.png' %}" alt="Tunisian Flag" class="logo"></div>
+                        <div class="stat-label">Made for Tunisian labs</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-number">50%</div>
-                        <div class="stat-label">Time Saved on Admin</div>
+                        <div class="stat-number">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-file-earmark-excel" viewBox="0 0 16 16">
+                                <path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z"/>
+                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-label">No more spreadsheets!</div>
                     </div>
                     <div class="stat">
                         <div class="stat-number">99.9%</div>
