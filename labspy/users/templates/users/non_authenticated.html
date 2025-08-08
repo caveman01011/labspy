@@ -1,0 +1,8 @@
+{% extends 'registration/layout.html' %}
+
+{% block title %}Non Authenticated{% endblock %}
+
+{% block body %}
+<p>You are not authenticated, you can't access this page :(</p>
+<a href="{% url 'users:login' %}">Login</a>
+{% endblock %}
