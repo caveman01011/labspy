@@ -1,0 +1,11 @@
+{% extends 'registration/layout.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<form method="post" class="register-form">
+    <h3 class="register-title">Create an account</h3>
+    <p>Register to get started</p>
+    {% csrf_token %}
+    {{ form.as_p }}
+{% endblock %}

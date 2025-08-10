@@ -4,4 +4,5 @@
 
 {% block body %}
 <h1>Welcome! {{ user.username }}, this is the home page</h1>
+<button class="btn btn-danger" onclick="window.location.href='{% url 'users:logout' %}'">Logout</button>
 {% endblock %}
