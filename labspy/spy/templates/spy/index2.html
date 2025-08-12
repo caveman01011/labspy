@@ -23,6 +23,22 @@
                 <li><a href="#contact" class="nav-link">Contact</a></li>
                 <li><a href="#demo" class="btn btn-outline-primary">Get Demo</a></li>
             </ul>
+
+            <ul class="nav-menu">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'users:home' %}" class="btn btn-primary">Home</a></li>
+                    <li>
+                        <form action="{% url 'users:logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'users:login' %}" class="btn btn-outline-primary">Login</a></li>
+                    <li><a href="{% url 'users:register' %}" class="btn btn-primary">Register</a></li>
+                {% endif %}
+            </ul>
+
             <div class="hamburger">
                 <span></span>
                 <span></span>

@@ -4,5 +4,8 @@
 
 {% block body %}
 <h1>Welcome! {{ user.username }}, this is the home page</h1>
-<button class="btn btn-danger" onclick="window.location.href='{% url 'users:logout' %}'">Logout</button>
+<form action="{% url 'users:logout' %}" method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger" type="submit">Logout</button>
+</form>
 {% endblock %}

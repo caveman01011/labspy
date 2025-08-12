@@ -3,9 +3,11 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-<form method="post" class="register-form">
-    <h3 class="register-title">Create an account</h3>
+<form method="post" class="register-form login-form">
+    <h3 class="register-title login-title">Create an account</h3>
     <p>Register to get started</p>
     {% csrf_token %}
     {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
 {% endblock %}

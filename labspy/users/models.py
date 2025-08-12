@@ -1,13 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
-
 # Create your models here.
 class CustomUser(AbstractUser):
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    phone_number = models.CharField(max_length=8, blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    user_type = models.CharField(max_length=10, choices=[('admin', 'Admin'), ('user', 'User')], default='user')
 
 class CustomUserManager(BaseUserManager):
+    def validate_phone_number(self, phone_number):
+        if not phone_number:
+            return True
+        if len(phone_number) != 8:
+            raise ValueError('The Phone Number field must be 8 digits')
+        if not phone_number.isdigit():
+            raise ValueError('The Phone Number field must be digits')
+        return True
 
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -16,6 +24,8 @@ class CustomUserManager(BaseUserManager):
         if not username:
             raise ValueError('The Username field must be set')
 
+        if not self.validate_phone_number(extra_fields.get('phone_number')):
+            raise ValueError('The Phone Number field must be 8 digits')
 
         username = extra_fields.get('username')
         email = self.normalize_email(email)
