@@ -5,7 +5,6 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=8, blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    user_type = models.CharField(max_length=10, choices=[('admin', 'Admin'), ('user', 'User')], default='user')
 
 class CustomUserManager(BaseUserManager):
     def validate_phone_number(self, phone_number):
@@ -36,7 +35,6 @@ class CustomUserManager(BaseUserManager):
         
     
     def create_superuser(self, username, password=None, **extra_fields):
-        extra_fields.setdefault('phone_number', '0000000000')
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)

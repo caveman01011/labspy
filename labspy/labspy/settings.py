@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'spy',
     'users',
+    'labspaces',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
