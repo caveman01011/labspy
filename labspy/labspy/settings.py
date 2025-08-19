@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'spy',
     'users',
     'labspaces',
+    'hijack',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -126,6 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Authentication settings
 AUTH_USER_MODEL = 'users.CustomUser'
-LOGIN_REDIRECT_URL = 'users:home'
 LOGIN_URL = 'users:login'
+LOGIN_REDIRECT_URL = 'labspaces:home'
 LOGOUT_REDIRECT_URL = LOGIN_URL
+

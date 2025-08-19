@@ -26,7 +26,7 @@
 
             <ul class="nav-menu">
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'users:home' %}" class="btn btn-primary">Home</a></li>
+                    <li><a href="{% url 'labspaces:home' %}" class="btn btn-primary">Home</a></li>
                     <li>
                         <form action="{% url 'users:logout' %}" method="post">
                             {% csrf_token %}

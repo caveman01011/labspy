@@ -3,7 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-<h1>Welcome! {{ user.username }}, this is the home page</h1>
+<h1>Signed in as {{ user.username }}.</h1>
 <form action="{% url 'users:logout' %}" method="post">
     {% csrf_token %}
     <button class="btn btn-danger" type="submit">Logout</button>
