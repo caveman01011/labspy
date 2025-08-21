@@ -5,5 +5,6 @@ app_name = 'labspaces'
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('lab/', views.lab_index, name='lab_index'),
+    path('create_lab/', views.lab_create, name='lab_create'),
+    path('labspace/<int:code>/', views.labspace_view, name='labspace_view'),
 ]

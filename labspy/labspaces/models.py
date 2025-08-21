@@ -1,12 +1,33 @@
 from django.db import models
 from users.models import CustomUser
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
+import random
+import string
 
 # Create your models here.
 
 class Lab(models.Model):
-    name = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
     
+    code = models.CharField(max_length=6, unique=True, null=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True, max_length=1024)
+    contact_email = models.EmailField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def generate_code(self):
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    
+    def save(self, *args, **kwargs):
+        if self.contact_email:        
+            try:
+                validate_email(self.contact_email)
+            except ValidationError:
+                raise ValidationError("Please enter a valid email address")
+        self.code = self.generate_code()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 

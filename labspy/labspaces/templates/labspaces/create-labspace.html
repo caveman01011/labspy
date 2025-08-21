@@ -1,0 +1,12 @@
+{% extends 'labspaces/layout.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Create Labspace</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-1 create-lab-btn">Create Labspace  </button>
+    </form>
+</div>
+{% endblock %}

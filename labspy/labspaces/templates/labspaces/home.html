@@ -1,8 +1,56 @@
 {% extends 'labspaces/layout.html' %}
 
 {% block content %}
-<h1>Welcome to LabSpy!</h1>
-<p>You don't seem to belong to any labs yet. You can create a new lab or join an existing one.</p>
-<a href="#" class="btn btn-primary">Join an existing lab</a>
-<a href="#" class="btn btn-secondary">Create a new lab</a> 
+<h1 class="text-center">Welcome to LabSpy!</h1>
+<p class="text-center">You don't seem to have joined any labspaces yet. Join a labspace to get started.</p>
+<div class="d-flex justify-content-center gap-3">
+    <button class="btn-1 join-lab-btn">Join an existing labspace</button>
+</div>
+<hr class="hr-1">
+<p class="text-center">Are you a lab owner/manager?</p>
+
+<div class="d-flex justify-content-center gap-3">
+    <button class="btn-1 create-lab-btn" onclick="window.location.href='{% url 'labspaces:lab_create' %}'">Create a new labspace  </button> 
+</div>
+
+<!-- Join Lab Modal -->
+<div class="modal fade" id="joinLabModal" tabindex="-1" aria-labelledby="joinLabModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="joinLabModalLabel">Join a Labspace</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="labspaceCode" class="form-label">Enter Labspace Code</label>
+                        <input type="text" class="form-control" id="labspaceCode" placeholder="Enter the 6-digit code">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-body">
+                <ul class="text-left">
+                    <li>Every labspace has a unique 6-digit code.</li>
+                    <li>If you don't have a code, contact the lab manager or a member of the labspace.</li>
+                    <li>Your join request will be sent to the lab manager for approval.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-1 cancel-btn" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-1 join-lab-btn">Join Labspace</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('.join-lab-btn').addEventListener('click', function() {
+        var joinLabModal = new bootstrap.Modal(document.getElementById('joinLabModal'));
+        joinLabModal.show();
+    });
+</script>
+
+
+
 {% endblock %}  
