@@ -25,7 +25,7 @@
             
             <!-- Brand -->
             <a class="navbar-brand fw-bold" href="#">
-                <img src="{% static 'spy/labspy-logo.png' %}" alt="LabSpy" class="logo">
+                <img src="{% static 'spy/labspy-mark-nobg.png' %}" alt="LabSpy" class="logo">
             </a>
             
             <!-- Navbar Items -->
@@ -51,54 +51,89 @@
             <!-- Sidebar -->
             <nav class="col-lg-3 col-md-4 col-sm-12 sidebar" id="sidebar">
                 <div class="p-3">
-                    <h5 class="text-center mb-4">
-                        <i class="bi bi-flask me-2"></i>
+                    <h4 class="text-center mb-3">
                         Navigation
-                    </h5>
+                    </h4>
                     
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">
+                            <a class="nav-link active" href="{% url 'labspaces:labspace_view' code='YSZIVU' %}">
                                 <i class="bi bi-house-door"></i>
                                 Dashboard
                             </a>
                         </li>
+
+                        {% if user_is_admin and current_lab %}
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flask" viewBox="0 0 16 16"><path d="M4.5 0a.5.5 0 0 0 0 1H5v5.36L.503 13.717A1.5 1.5 0 0 0 1.783 16h12.434a1.5 1.5 0 0 0 1.28-2.282L11 6.359V1h.5a.5.5 0 0 0 0-1zM10 2H9a.5.5 0 0 0 0 1h1v1H9a.5.5 0 0 0 0 1h1v1H9a.5.5 0 0 0 0 1h1.22l.61 1H10a.5.5 0 1 0 0 1h1.442l.611 1H11a.5.5 0 1 0 0 1h1.664l.611 1H12a.5.5 0 1 0 0 1h1.886l.758 1.24a.5.5 0 0 1-.427.76H1.783a.5.5 0 0 1-.427-.76l4.57-7.48A.5.5 0 0 0 6 6.5V1h4z"/></svg>
-                                Experiments
+                            <a class="nav-link" href="{% url 'labspaces:pending_requests' code=current_lab.code %}">
+                                <i class="bi bi-person-down"></i>
+                                Pending requests
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-people-fill"></i>
+                                Manage members
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-file-text"></i>
+                                Admin logs
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-shield-check"></i>
+                                Permissions
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-inboxes"></i>
+                                Stock
+                            </a>
+                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <i class="bi bi-graph-up"></i>
                                 Results
                             </a>
                         </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <i class="bi bi-calendar3"></i>
                                 Schedule
                             </a>
                         </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <i class="bi bi-people"></i>
                                 Team
                             </a>
                         </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <i class="bi bi-file-earmark-text"></i>
                                 Reports
                             </a>
                         </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <i class="bi bi-gear"></i>
                                 Settings
                             </a>
                         </li>
+                    
                     </ul>
                     
                     <hr class="my-4">

@@ -1,8 +1,40 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-
+from django.http import Http404, HttpResponseForbidden, HttpResponseNotAllowed
 from .models import Lab, LabMembership
 from .forms import LabCreationForm
+
+def is_lab_admin(user, lab_code):
+    """
+    Check if a user is an admin (owner) of a specific lab.
+    
+    Args:
+        user: The user to check
+        lab_code: The lab code to check against
+        
+    Returns:
+        bool: True if user is admin, False otherwise
+    """
+    try:
+        lab = Lab.objects.get(code=lab_code)
+        return LabMembership.objects.filter(
+            lab=lab, 
+            user=user, 
+            role='owner'
+        ).exists()
+    except Lab.DoesNotExist:
+        return False
+
+def is_lab_member(user, lab_code):
+    try:
+        lab = Lab.objects.get(code=lab_code)
+        return LabMembership.objects.filter(
+            lab=lab, 
+            user=user, 
+            role__in=['owner', 'admin', 'member']
+        ).exists()
+    except Lab.DoesNotExist:
+        return False
 
 # Create your views here.
 @login_required
@@ -11,7 +43,8 @@ def home(request):
 
 @login_required
 def lab_index(request):
-    return render(request, 'labspaces/lab_index.html')
+    joined_labs = LabMembership.objects.filter(user=request.user)
+    return render(request, 'labspaces/lab_index.html', {'joined_labs': joined_labs})
 
 @login_required
 def lab_create(request):
@@ -31,5 +64,37 @@ def lab_create(request):
 
 @login_required
 def labspace_view(request, code):
-    labspace = Lab.objects.get(code=code)   
-    return render(request, 'labspaces/labspace_view.html', {'labspace': labspace})
+    try:
+        labspace = Lab.objects.get(code=code)  
+    except Lab.DoesNotExist:
+        raise Http404("Lab not found")
+    return render(request, 'labspaces/lab_index.html', {'labspace': labspace}) 
+
+@login_required
+def lab_join(request):
+    if request.method == "POST":
+        lab_code = request.POST.get('lab_code')
+        try:
+            lab = Lab.objects.get(code=lab_code)
+            LabMembership.objects.create(
+                lab=lab,
+                user=request.user,
+                role='pending'
+            )
+            return redirect('labspaces:labspace_view', code=lab_code)
+        except Lab.DoesNotExist:
+            return redirect('labspaces:home')
+    else:
+        return HttpResponseNotAllowed("Invalid request method")
+
+@login_required
+def pending_requests(request, code):
+    try:
+        labspace = Lab.objects.get(code=code)
+        pending_requests = LabMembership.objects.filter(lab=labspace, role='pending')
+        return render(request, 'labspaces/admin-pending-requests.html', {
+            'pending_requests': pending_requests,
+            'labspace': labspace
+        })
+    except Lab.DoesNotExist:
+        raise Http404("Lab not found")

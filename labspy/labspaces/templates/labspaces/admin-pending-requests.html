@@ -1,0 +1,24 @@
+{% extends 'labspaces/lab_layout.html' %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <h2>Pending Join Requests</h2>
+        
+        {% if pending_requests %}
+            <div class="list-group mt-4">
+                {% for request in pending_requests %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1">{{ request.user.username }}</h5>
+                                <small class="text-muted">Requested on: {{ request.created_at|date:"M d, Y" }}</small>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No pending requests at this time.</p>
+        {% endif %}
+    </div>
+{% endblock %}
