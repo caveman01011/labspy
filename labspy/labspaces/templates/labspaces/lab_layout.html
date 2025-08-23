@@ -57,18 +57,21 @@
                     
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'labspaces:labspace_view' code='YSZIVU' %}">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'labspace_view' %}active{% endif %}" 
+                               href="{% url 'labspaces:labspace_view' code='YSZIVU' %}">
                                 <i class="bi bi-house-door"></i>
                                 Dashboard
                             </a>
                         </li>
 
                         {% if user_is_admin and current_lab %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'labspaces:pending_requests' code=current_lab.code %}">
+                        <li class="nav-item ">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'pending_requests' %}active{% endif %} " 
+                               href="{% url 'labspaces:pending_requests' code=current_lab.code %}">
                                 <i class="bi bi-person-down"></i>
                                 Pending requests
                             </a>
+                            
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">

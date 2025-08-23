@@ -1,5 +1,6 @@
-from .models import Lab, LabMembership
 from django.urls import resolve
+
+from .models import Lab, LabMembership
 
 def lab_admin_status(request):
     """
@@ -32,3 +33,7 @@ def lab_admin_status(request):
         except Exception as e:
             pass
     return context 
+
+def unchecked_pendings(request):
+    context = {'unchecked_pendings': 0}
+    return context
