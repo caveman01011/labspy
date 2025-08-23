@@ -6,12 +6,25 @@
         
         {% if pending_requests %}
             <div class="list-group mt-4">
+                <p>These users have requested to join your labspace:</p>
                 {% for request in pending_requests %}
                     <div class="list-group-item">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h5 class="mb-1">{{ request.user.username }}</h5>
-                                <small class="text-muted">Requested on: {{ request.created_at|date:"M d, Y" }}</small>
+                                <small class="text-muted">Requested on: {{ request.created_at|date:"l, M d, Y, H:i" }}</small>
+                            </div>
+                            <div class="d-inline-flex gap-2">
+                                <form action="{% url 'labspaces:accept_request' code=labspace.code %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="request_id" value="{{ request.id }}">
+                                    <button type="submit" class="btn-1 accept-btn"><i class="bi bi-check-lg"></i></button>
+                                </form>
+                                <form action="{% url 'labspaces:reject_request' code=labspace.code %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="request_id" value="{{ request.id }}">
+                                    <button type="submit" class="btn-1 reject-btn"><i class="bi bi-x-lg"></i></button>
+                                </form>
                             </div>
                         </div>
                     </div>

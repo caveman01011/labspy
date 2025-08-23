@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404, HttpResponseForbidden, HttpResponseNotAllowed
+from django.views.decorators.http import require_POST
+
 from .models import Lab, LabMembership
 from .forms import LabCreationForm
 
@@ -98,3 +100,34 @@ def pending_requests(request, code):
         })
     except Lab.DoesNotExist:
         raise Http404("Lab not found")
+
+@login_required
+@user_passes_test(is_lab_admin)
+@require_POST
+def accept_request(request, code):
+    try:
+        labspace = Lab.objects.get(code=code)
+        request_id = request.POST.get('request_id')
+        req = LabMembership.objects.get(id=request_id)
+        req.role = 'member'
+        req.save()
+        return redirect('labspaces:pending_requests', code=code)
+    except Lab.DoesNotExist:
+        raise Http404("Lab not found")
+    except LabMembership.DoesNotExist:
+        raise Http404("Request not found")
+
+@login_required
+@user_passes_test(is_lab_admin)
+@require_POST
+def reject_request(request, code):
+    try:
+        labspace = Lab.objects.get(code=code)
+        user_id = request.POST.get('pending_user')
+        pending_user = LabMembership.objects.get(id=user_id)
+        pending_user.delete()
+        return redirect('labspaces:pending_requests', code=code)
+    except Lab.DoesNotExist:
+        raise Http404("Lab not found")
+    except LabMembership.DoesNotExist:
+        raise Http404("Request not found")
