@@ -18,6 +18,12 @@ class Lab(models.Model):
 
     def generate_code(self):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+
+    def has_pending_requests(self):
+        """
+        Returns True if there are any pending join requests for this lab.
+        """
+        return LabMembership.objects.filter(lab=self, role='pending').exists()
     
     def save(self, *args, **kwargs):
         if self.contact_email:        

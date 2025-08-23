@@ -1,7 +1,7 @@
 from django.urls import resolve
 
 from .models import Lab, LabMembership
-from .utils import get_lab_code_from_url
+from .util import get_lab_code_from_url
 
 def lab_admin_status(request):
     """
@@ -14,10 +14,8 @@ def lab_admin_status(request):
     if request.user.is_authenticated:
         # Use Django's resolve to get URL parameters instead of parsing the path
         try:
-            resolved = resolve(request.path)
-            # Check if we're in a labspace context by looking for 'code' parameter
-            if 'code' in resolved.kwargs:
-                lab_code = resolved.kwargs['code']
+            lab_code = get_lab_code_from_url(request)
+            if lab_code != "":
                 try:
                     lab = Lab.objects.get(code=lab_code)
                     # Check if user is admin of this lab
@@ -35,8 +33,3 @@ def lab_admin_status(request):
             pass
     return context 
 
-def unchecked_pendings(request):
-    context = {'unchecked_pendings': 0}
-    if user.is_authenticated:
-        
-    return context

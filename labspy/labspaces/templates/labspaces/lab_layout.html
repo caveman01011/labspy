@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}LabSpy{% endblock %}</title>
+    <title>{% block title %} {{labspace.name}} {% endblock %}</title>
     <link rel="stylesheet" href="{% static 'labspaces/styles.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'spy/labspy-logo.png' %}">
     
@@ -24,7 +24,7 @@
             </button>
             
             <!-- Brand -->
-            <a class="navbar-brand fw-bold" href="#">
+            <a class="navbar-brand fw-bold" href="{% url 'labspaces:home' %}">
                 <img src="{% static 'spy/labspy-mark-nobg.png' %}" alt="LabSpy" class="logo">
             </a>
             
@@ -58,7 +58,7 @@
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'labspace_view' %}active{% endif %}" 
-                               href="{% url 'labspaces:labspace_view' code='YSZIVU' %}">
+                               href="{% if current_lab %}{% url 'labspaces:labspace_view' code=current_lab.code %}{% else %}{% url 'labspaces:home' %}{% endif %}">
                                 <i class="bi bi-house-door"></i>
                                 Dashboard
                             </a>
@@ -70,6 +70,7 @@
                                href="{% url 'labspaces:pending_requests' code=current_lab.code %}">
                                 <i class="bi bi-person-down"></i>
                                 Pending requests
+                                {% if labspace.has_pending_requests %}<i class="bi bi-exclamation-circle-fill text-danger m-2"></i>{% endif %}
                             </a>
                             
                         </li>
