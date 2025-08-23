@@ -1,6 +1,7 @@
 from django.urls import resolve
 
 from .models import Lab, LabMembership
+from .utils import get_lab_code_from_url
 
 def lab_admin_status(request):
     """
@@ -36,4 +37,6 @@ def lab_admin_status(request):
 
 def unchecked_pendings(request):
     context = {'unchecked_pendings': 0}
+    if user.is_authenticated:
+        
     return context
