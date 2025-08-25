@@ -42,7 +42,13 @@ def is_lab_member(user, lab_code):
 # Create your views here.
 @login_required
 def home(request):
-    return render(request, 'labspaces/home.html')
+    user_labs_qs = Lab.objects.filter(
+        labmembership__user=request.user
+    ).exclude(
+        labmembership__role='pending'
+    ).distinct()
+    user_labs = list(user_labs_qs) if user_labs_qs.exists() else []
+    return render(request, 'labspaces/home.html', {"user_labs": user_labs})
 
 @login_required
 def lab_index(request):
