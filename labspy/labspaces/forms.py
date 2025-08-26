@@ -15,3 +15,24 @@ class LabCreationForm(forms.ModelForm):
         self.fields['name'].label = 'Labspace Name'
         self.fields['description'].label = 'Lab Description (optional)'
         self.fields['contact_email'].label = 'Labspace Contact Email (optional)'
+
+class LabJoinForm(forms.Form):
+    code = forms.CharField(
+        max_length=6,
+        min_length=6,
+        help_text="Enter the lab's 6 character alphanumeric code",
+        label="Labspace Code",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter the 6-character code',
+            'autocomplete': 'off',
+            'inputmode': 'text',
+            'pattern': '[A-Za-z0-9]{6}',
+        })
+    )
+
+    def clean_code(self):
+        code = self.cleaned_data['code']
+        if not code.isalnum() or len(code) != 6:
+            raise forms.ValidationError("Code must be exactly 6 alphanumeric characters (letters and numbers only).")
+        return code
