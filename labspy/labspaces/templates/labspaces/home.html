@@ -45,9 +45,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{% url "labspaces:lab_join" %}">
+                <form  method="post" action="{% url "labspaces:lab_join" %}" autocomplete="off">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    {{ join_form.as_p }}
                 </form>
             </div>
             <div class="modal-body">
@@ -59,7 +59,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-1 cancel-btn" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn-1 join-lab-btn">Join Labspace</button>
+                <button type="submit" class="btn-1 join-lab-btn" form="join-lab-form">Join Labspace</button>
             </div>
         </div>
     </div>

@@ -1,5 +1,4 @@
 from django.urls import path
-from django.views.decorators.http import require_POST
 from . import views
 
 app_name = 'labspaces'
@@ -11,6 +10,7 @@ urlpatterns = [
     path('lab/<str:code>/pending_requests/', views.pending_requests, name='pending_requests'),
 
     #POST routes
-    path('lab/<str:code>/accept_request/', views.accept_request, name='accept_request'),
-    path('lab/<str:code>/reject_request/', views.reject_request, name='reject_request'),
+    path('join_lab/', views.lab_join, name="lab_join"),
+    path('lab/accept_request/', views.accept_request, name='accept_request'),
+    path('lab/reject_request/', views.reject_request, name='reject_request'),
 ]

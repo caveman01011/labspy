@@ -15,12 +15,12 @@
                                 <small class="text-muted">Requested on: {{ request.created_at|date:"l, M d, Y, H:i" }}</small>
                             </div>
                             <div class="d-inline-flex gap-2">
-                                <form action="{% url 'labspaces:accept_request' code=labspace.code %}" method="post">
+                                <form action="{% url 'labspaces:accept_request' %}" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="request_id" value="{{ request.id }}">
                                     <button type="submit" class="btn-1 accept-btn"><i class="bi bi-check-lg"></i></button>
                                 </form>
-                                <form action="{% url 'labspaces:reject_request' code=labspace.code %}" method="post">
+                                <form action="{% url 'labspaces:reject_request' %}" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="request_id" value="{{ request.id }}">
                                     <button type="submit" class="btn-1 reject-btn"><i class="bi bi-x-lg"></i></button>

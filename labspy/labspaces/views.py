@@ -47,9 +47,10 @@ def home(request):
     ).filter(
         labmembership__role__in=["owner", "member"]
     ).distinct()
-    user_labs = list(user_labs_qs) #if user_labs_qs.exists() else []
+    user_labs = list(user_labs_qs)
+    form = LabJoinForm()
     print(f"User labs: {user_labs}")
-    return render(request, 'labspaces/home.html', {"user_labs": user_labs})
+    return render(request, 'labspaces/home.html', {"user_labs": user_labs, "join_form": form})
 
 @login_required
 def lab_create(request):
@@ -107,6 +108,7 @@ def labspace_view(request, code):
     return render(request, 'labspaces/lab_index.html', context)
 
 @login_required
+@require_POST
 def lab_join(request):
     if request.method == "POST":
         form = LabJoinForm(request.POST)
@@ -141,35 +143,33 @@ def pending_requests(request, code):
 
 @login_required
 @require_POST
-def accept_request(request, code):
-    if is_lab_admin(request.user, code):
-        try:
-            labspace = Lab.objects.get(code=code)
-            request_id = request.POST.get('request_id')
-            req = LabMembership.objects.get(id=request_id)
-            req.role = 'member'
-            req.save()
+def accept_request(request):
+    try:
+        request_id = request.POST.get('request_id')
+        membership_request = LabMembership.objects.get(id=request_id)
+        labspace = membership_request.lab
+        code = labspace.code
+        if is_lab_admin(request.user, code):
+            membership_request.role = 'member'
+            membership_request.save()
             return redirect('labspaces:pending_requests', code=code)
-        except Lab.DoesNotExist:
-            raise Http404("Lab not found")
-        except LabMembership.DoesNotExist:
-            raise Http404("Request not found")
-    else: 
-        return HttpResponseForbidden("You do not have permission to perform this action.")
+        else:
+            return HttpResponseForbidden("You do not have permission to perform this action.")
+    except LabMembership.DoesNotExist:
+        raise Http404("Request not found")
 
 @login_required
 @require_POST
-def reject_request(request, code):
-    if is_lab_admin(request.user, code):
-        try:
-            labspace = Lab.objects.get(code=code)
-            user_id = request.POST.get('pending_user')
-            pending_user = LabMembership.objects.get(id=user_id)
-            pending_user.delete()
+def reject_request(request):
+    try:
+        request_id = request.POST.get('request_id')
+        membership_request = LabMembership.objects.get(id=request_id)
+        labspace = membership_request.lab
+        code = labspace.code
+        if is_lab_admin(request.user, code):
+            membership_request.delete()
             return redirect('labspaces:pending_requests', code=code)
-        except Lab.DoesNotExist:
-            raise Http404("Lab not found")
-        except LabMembership.DoesNotExist:
-            raise Http404("Request not found")
-    else:
-        return HttpResponseForbidden("You do not have permission to perform this action.")
+        else:
+            return HttpResponseForbidden("You do not have permission to perform this action.")
+    except LabMembership.DoesNotExist:
+        raise Http404("Request not found")
