@@ -42,15 +42,32 @@ def is_lab_member(user, lab_code):
 # Create your views here.
 @login_required
 def home(request):
+    # Get labs where user is owner or member (exclude pending)
     user_labs_qs = Lab.objects.filter(
-        labmembership__user=request.user
-    ).filter(
+        labmembership__user=request.user,
         labmembership__role__in=["owner", "member"]
     ).distinct()
     user_labs = list(user_labs_qs)
+
+    # Get labs where user is pending
+    pending_labs_qs = Lab.objects.filter(
+        labmembership__user=request.user,
+        labmembership__role="pending"
+    ).distinct()
+    pending_labs = list(pending_labs_qs)
+
     form = LabJoinForm()
     print(f"User labs: {user_labs}")
-    return render(request, 'labspaces/home.html', {"user_labs": user_labs, "join_form": form})
+    print(f"Pending labs: {pending_labs}")
+    return render(
+        request,
+        'labspaces/home.html',
+        {
+            "user_labs": user_labs,
+            "pending_labs": pending_labs,
+            "join_form": form
+        }
+    )
 
 @login_required
 def lab_create(request):
@@ -79,11 +96,19 @@ def labspace_view(request, code):
     is_member = LabMembership.objects.filter(
         lab=labspace,
         user=request.user,
-        role__in=['owner', 'admin', 'member']
+        role__in=['owner', 'manager', 'researcher', 'guest']
+    ).exists()
+
+    is_pending = LabMembership.objects.filter(
+        lab=labspace,
+        user=request.user,
+        role = 'pending'
     ).exists()
 
     # Optionally, you could restrict access to only members
     if not is_member:
+        if is_pending:
+            return HttpResponseForbidden("Your request to join this labspace is still pending, please wait for the labspace admin's approval.")
         return HttpResponseForbidden("Access Denied.")
 
     # Determine if the user is an admin/owner
@@ -113,7 +138,10 @@ def lab_join(request):
     if request.method == "POST":
         form = LabJoinForm(request.POST)
         try:
-            lab_code = form.cleaned_data["code"]
+            if form.is_valid():
+                lab_code = form.cleaned_data["code"]
+            else:
+                return redirect('labspaces:home')
             lab = Lab.objects.get(code=lab_code)
             LabMembership.objects.create(
                 lab=lab,

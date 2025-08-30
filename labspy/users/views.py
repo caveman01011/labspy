@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.contrib.auth import login
+from django.contrib.auth import logout as auth_logout
+
 from .forms import UserRegistrationForm
 
 # Create your views here.
@@ -13,6 +15,7 @@ def login(request):
     return render(request, 'registration/login.html')
 
 def logout(request):
+    auth_logout(request)
     return redirect('users:login')
 
 @login_required(login_url='users:login')
@@ -24,7 +27,7 @@ def register(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request)
             return redirect('users:home')
     else:
         form = UserRegistrationForm()
