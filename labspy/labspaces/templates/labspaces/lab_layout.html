@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %} {{labspace.name}} {% endblock %}</title>
+    <title>{% block title %}{% endblock %} | {{labspace.name}} </title>
     <link rel="stylesheet" href="{% static 'labspaces/styles.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'spy/labspy-logo.png' %}">
     
@@ -75,7 +75,8 @@
                             
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'manage_members' %}active{% endif %}" 
+                               href="{% url 'labspaces:manage_members' code=current_lab.code %}">
                                 <i class="bi bi-people-fill"></i>
                                 Manage members
                             </a>
