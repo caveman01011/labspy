@@ -201,3 +201,11 @@ def reject_request(request):
             return HttpResponseForbidden("You do not have permission to perform this action.")
     except LabMembership.DoesNotExist:
         raise Http404("Request not found")
+
+@login_required
+def user_pending_labs(request):
+    pending_labs = Lab.objects.filter(
+        labmembership__user=request.user, 
+        labmembership__role='pending'
+        ).distinct()
+    return render(request, 'labspaces/user_pending_labs.html', {'pending_labs': pending_labs})
