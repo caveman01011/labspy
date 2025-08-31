@@ -1,4 +1,5 @@
 {% load static %}
+{% load active_link_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,15 +25,13 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav me-auto gap-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url "labspaces:home" %}">Home</a>
+                        <a class="nav-link {% active_link 'home' 'active' %}" href="{% url "labspaces:home" %}">Your labspaces</a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="">Labs</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Equipment</a>
+                        <a class="nav-link {% active_link 'user_pending_labs' 'active' %}" href="{% url "labspaces:user_pending_labs" %}">Pending requests</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
