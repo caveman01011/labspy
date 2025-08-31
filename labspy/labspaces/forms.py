@@ -36,3 +36,51 @@ class LabJoinForm(forms.Form):
         if not code.isalnum() or len(code) != 6:
             raise forms.ValidationError("Code must be exactly 6 alphanumeric characters (letters and numbers only).")
         return code
+
+class UserManagementSearchForm(forms.Form):
+    username = forms.CharField(
+        required=False,
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Search by username...',
+        }),
+        label='Username'
+    )
+    
+    first_name = forms.CharField(
+        required=False,
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Search by first name...',
+        }),
+        label='First Name'
+    )
+    
+    last_name = forms.CharField(
+        required=False,
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Search by last name...',
+        }),
+        label='Last Name'
+    )
+    
+    role = forms.ChoiceField(
+        required=False,
+        choices=[
+            ('', 'All Roles'),
+            ('owner', 'Owner'),
+            ('admin', 'Admin'),
+            ('member', 'Member'),
+            ('manager', 'Manager'),
+            ('researcher', 'Researcher'),
+            ('guest', 'Guest'),
+        ],
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+        }),
+        label='Role'
+    )

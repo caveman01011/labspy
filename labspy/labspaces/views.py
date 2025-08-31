@@ -3,9 +3,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404, HttpResponseForbidden, HttpResponseNotAllowed
 from django.views.decorators.http import require_POST
 from django.urls import resolve
+from django.db.models import Q
 
 from .models import Lab, LabMembership
-from .forms import LabCreationForm, LabJoinForm
+from .forms import LabCreationForm, LabJoinForm, UserManagementSearchForm
 
 def is_lab_admin(user, lab_code):
     """
@@ -218,17 +219,37 @@ def manage_members(request, code):
     
     try:
         labspace = Lab.objects.get(code=code)
+        
+        # Initialize search form
+        search_form = UserManagementSearchForm(request.GET)
+        
         # Get all members of the lab (excluding pending requests)
         lab_members = LabMembership.objects.filter(
             lab=labspace, 
             role__in=['owner', 'admin', 'member', 'manager', 'researcher', 'guest']
         ).select_related('user').order_by('role', 'user__username')
-
-
+        
+        # Apply search filters if form is valid
+        if search_form.is_valid():
+            username = search_form.cleaned_data.get('username')
+            first_name = search_form.cleaned_data.get('first_name')
+            last_name = search_form.cleaned_data.get('last_name')
+            role = search_form.cleaned_data.get('role')
+            
+            # Build filter conditions
+            if username:
+                lab_members = lab_members.filter(user__username__icontains=username)
+            if first_name:
+                lab_members = lab_members.filter(user__first_name__icontains=first_name)
+            if last_name:
+                lab_members = lab_members.filter(user__last_name__icontains=last_name)
+            if role:
+                lab_members = lab_members.filter(role=role)
         
         return render(request, 'labspaces/manage_members.html', {
             'labspace': labspace,
-            'lab_members': lab_members
+            'lab_members': lab_members,
+            'search_form': search_form
         })
     except Lab.DoesNotExist:
         raise Http404("Lab not found")

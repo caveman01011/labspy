@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
-# Create your models here.
 class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=8, blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True, null=True, blank=True)
