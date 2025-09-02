@@ -14,11 +14,11 @@ class Equipment(models.Model):
         ("other", "Other"),
     ]
 
-    choices=[
-            ("available", "Available"),
-            ("in_use", "In Use"),
-            ("maintenance", "Under Maintenance"),
-            ("broken", "Broken"),
+    STATUS_CHOICES=[
+        ("available", "Available"),
+        ("in_use", "In Use"),
+        ("maintenance", "Under Maintenance"),
+        ("broken", "Broken"),
     ]
     
     name = models.CharField(max_length=101)

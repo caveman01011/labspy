@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'spy',
     'users',
     'labspaces',
+    'inventory',
     'hijack',
     'active_link',
     'django.contrib.admin',
