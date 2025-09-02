@@ -13,6 +13,11 @@
                     <h5 class="card-title text-center">{{ lab.name }}</h5>
                     <hr>
                     <b>Your request for this lab is still pending.</b>
+                    <form method="post" action="{% url "labspaces:cancel_join_request" %}" class="text-center mt-auto">
+                        {% csrf_token %}
+                        <input type="hidden" name="lab_id" value="{{ lab.id }}">
+                        <button type="submit" class="btn btn-danger mt-auto"> <i class="bi bi-ban"></i> Cancel request</button>
+                    </form>
                 </div>
             </div>
         {% endfor %}

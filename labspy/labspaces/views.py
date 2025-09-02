@@ -157,6 +157,28 @@ def lab_join(request):
         return HttpResponseNotAllowed("Invalid request method")
 
 @login_required
+@require_POST
+def cancel_join_request(request):
+    lab_id = request.POST.get("lab_id")
+    if not lab_id:
+        return HttpResponseNotAllowed("Lab ID not provided")
+    try:
+        lab = Lab.objects.get(id=lab_id)
+    except Lab.DoesNotExist:
+        raise Http404("Lab not found")
+    try:
+        lab_request = LabMembership.objects.get(
+            user=request.user,
+            lab=lab,
+            role="pending",
+        )
+        print(f"FOUND LAB REQUEST: {lab_request}")
+        lab_request.delete()
+        return redirect('labspaces:user_pending_labs')
+    except LabMembership.DoesNotExist:
+        raise Http404("Request not found")
+
+@login_required
 def pending_requests(request, code):
     if not is_lab_admin(request.user, code):
         return HttpResponseForbidden("You are not authorized to view this page")

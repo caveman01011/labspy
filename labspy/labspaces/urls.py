@@ -14,6 +14,7 @@ urlpatterns = [
 
     #POST routes
     path('join_lab/', views.lab_join, name="lab_join"),
+    path('cancel_join_request/', views.cancel_join_request, name="cancel_join_request"),
     path('accept_request/', views.accept_request, name='accept_request'),
     path('reject_request/', views.reject_request, name='reject_request'),
     path('lab/<str:code>/remove_member/', views.remove_member, name='remove_member'),
