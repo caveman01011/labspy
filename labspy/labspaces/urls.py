@@ -5,12 +5,13 @@ app_name = 'labspaces'
 
 urlpatterns = [
     #Main routes
-    path('', views.home, name='home'),
-    path('user_pending_labs', views.user_pending_labs, name="user_pending_labs"),
+    path('/', views.home, name='home'),
+    path('user_pending_labs/', views.user_pending_labs, name="user_pending_labs"),
     path('create_lab/', views.lab_create, name='lab_create'),
     path('lab/<str:code>/', views.labspace_view, name='labspace_view'),
     path('lab/<str:code>/pending_requests/', views.pending_requests, name='pending_requests'),
     path('lab/<str:code>/manage_members/', views.manage_members, name='manage_members'),
+    path('lab/<str:code>/manage_permissions/', views.manage_permissions, name='manage_permissions'),
 
     #POST routes
     path('join_lab/', views.lab_join, name="lab_join"),

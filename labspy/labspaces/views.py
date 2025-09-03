@@ -308,3 +308,9 @@ def remove_member(request, code):
         raise Http404("Lab not found")
     except LabMembership.DoesNotExist:
         raise Http404("Member not found")
+
+@login_required
+def manage_permissions(request, code):
+    if not is_lab_admin(request.user, code):
+        return HttpResponseForbidden("Access denied")
+    pass
