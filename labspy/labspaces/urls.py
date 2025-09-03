@@ -5,7 +5,7 @@ app_name = 'labspaces'
 
 urlpatterns = [
     #Main routes
-    path('/', views.home, name='home'),
+    path('', views.home, name='home'),
     path('user_pending_labs/', views.user_pending_labs, name="user_pending_labs"),
     path('create_lab/', views.lab_create, name='lab_create'),
     path('lab/<str:code>/', views.labspace_view, name='labspace_view'),

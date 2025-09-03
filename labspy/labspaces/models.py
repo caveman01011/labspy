@@ -37,6 +37,22 @@ class Lab(models.Model):
     def __str__(self):
         return self.name
 
+class Role(models.Model):
+    name = models.CharField(max_length=64)
+    display_name = models.CharField(max_length=128)
+    description = models.CharField(max_length=255)
+    lab = models.ForeignKey(Lab, on_delete=models.CASCADE, null=True)
+    is_default = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now = True)
+
+    class Meta:
+        unique_together = ('lab', 'name')
+
+    def __str__(self):
+        return self.display_name
+
+
 class LabMembership(models.Model):
     ROLE_CHOICES = [
         ('pending', 'Pending'),
