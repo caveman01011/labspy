@@ -1,6 +1,6 @@
 from django import forms    
 
-from .models import Lab
+from .models import Lab, Role
 
 class LabCreationForm(forms.ModelForm):
     class Meta:

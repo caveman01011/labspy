@@ -23,7 +23,11 @@ class Lab(models.Model):
         """
         Returns True if there are any pending join requests for this lab.
         """
-        return LabMembership.objects.filter(lab=self, role='pending').exists()
+        try:
+            pending_role = Role.objects.get(name='Pending', is_default=True, lab__isnull=True)
+            return LabMembership.objects.filter(lab=self, role=pending_role).exists()
+        except Role.DoesNotExist:
+            return False
     
     def save(self, *args, **kwargs):
         if self.contact_email:        
@@ -38,32 +42,33 @@ class Lab(models.Model):
         return self.name
 
 class Role(models.Model):
+    """
+    Roles define the permissions of each member in a lab.
+    The field (is_default) is set to True only for roles that 
+    are included by default in every lab and not associated 
+    with one lab.
+    """
     name = models.CharField(max_length=64)
-    display_name = models.CharField(max_length=128)
     description = models.CharField(max_length=255)
-    lab = models.ForeignKey(Lab, on_delete=models.CASCADE, null=True)
+    lab = models.ForeignKey(Lab, on_delete=models.CASCADE, null=True, blank=True)
     is_default = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
 
     class Meta:
-        unique_together = ('lab', 'name')
+        unique_together = ('lab', 'name', 'is_default')
 
     def __str__(self):
-        return self.display_name
+        return self.name
 
 
 class LabMembership(models.Model):
-    ROLE_CHOICES = [
-        ('pending', 'Pending'),
-        ('owner', 'Owner'),
-        ('manager', 'Manager'),
-        ('researcher', 'Researcher'),
-        ('guest', 'Guest'),
-    ]
+    """
+    Membership of a user in a lab, with their assigned role.
+    """
     lab = models.ForeignKey(Lab, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    role = models.CharField(max_length=64, choices=ROLE_CHOICES)
+    role = models.ForeignKey(Role, default=1, on_delete=models.SET_DEFAULT)
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:

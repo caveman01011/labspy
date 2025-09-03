@@ -1,6 +1,6 @@
 from django.urls import resolve
 
-from .models import Lab, LabMembership
+from .models import Lab, LabMembership, Role
 from .util import get_lab_code_from_url
 
 def lab_admin_status(request):
@@ -19,10 +19,11 @@ def lab_admin_status(request):
                 try:
                     lab = Lab.objects.get(code=lab_code)
                     # Check if user is admin of this lab
+                    owner_role = Role.objects.get(name='Owner', is_default=True, lab__isnull=True)
                     is_admin = LabMembership.objects.filter(
                         lab=lab, 
                         user=request.user, 
-                        role='owner'
+                        role=owner_role
                     ).exists()
                     if is_admin:
                         context['user_is_admin'] = True

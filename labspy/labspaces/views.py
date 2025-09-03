@@ -5,7 +5,7 @@ from django.views.decorators.http import require_POST
 from django.urls import resolve
 from django.db.models import Q
 
-from .models import Lab, LabMembership
+from .models import Lab, LabMembership, Role
 from .forms import LabCreationForm, LabJoinForm, UserManagementSearchForm
 
 def is_lab_admin(user, lab_code):
@@ -21,10 +21,11 @@ def is_lab_admin(user, lab_code):
     """
     try:
         lab = Lab.objects.get(code=lab_code)
+        owner_role = Role.objects.get(name='owner', is_default=True, lab__isnull=True)
         return LabMembership.objects.filter(
             lab=lab, 
             user=user, 
-            role='owner'
+            role=owner_role
         ).exists()
     except Lab.DoesNotExist:
         return False
@@ -35,7 +36,8 @@ def is_lab_member(user, lab_code):
         return LabMembership.objects.filter(
             lab=lab, 
             user=user, 
-            role__in=['owner', 'admin', 'member']
+            role__name__in=['owner', 'admin', 'member'],
+            role__is_default=True
         ).exists()
     except Lab.DoesNotExist:
         return False
@@ -46,14 +48,16 @@ def home(request):
     # Get labs where user is owner or member (exclude pending)
     user_labs_qs = Lab.objects.filter(
         labmembership__user=request.user,
-        labmembership__role__in=["owner", "member"]
+        labmembership__role__name__in=["owner", "member"],
+        labmembership__role__is_default=True
     ).distinct()
     user_labs = list(user_labs_qs)
 
     # Get labs where user is pending
     pending_labs_qs = Lab.objects.filter(
         labmembership__user=request.user,
-        labmembership__role="pending"
+        labmembership__role__name="pending",
+        labmembership__role__is_default=True
     ).distinct()
     pending_labs = list(pending_labs_qs)
 
@@ -79,7 +83,8 @@ def lab_create(request):
             LabMembership.objects.create(
                 lab=form.instance,
                 user=request.user,
-                role='owner'
+                role__name='owner',
+                role__is_default=True
             )
             return redirect('labspaces:labspace_view', code=form.instance.code)
     else:
@@ -97,13 +102,15 @@ def labspace_view(request, code):
     is_member = LabMembership.objects.filter(
         lab=labspace,
         user=request.user,
-        role__in=['owner', 'manager', 'researcher', 'guest', 'member']
+        role__name__in=['owner', 'manager', 'researcher', 'guest', 'member'],
+        role__is_default=True
     ).exists()
 
     is_pending = LabMembership.objects.filter(
         lab=labspace,
         user=request.user,
-        role = 'pending'
+        role__name = 'pending',
+        role__is_default=True
     ).exists()
 
     # Optionally, you could restrict access to only members
@@ -116,13 +123,15 @@ def labspace_view(request, code):
     user_is_admin = LabMembership.objects.filter(
         lab=labspace,
         user=request.user,
-        role__in=['owner', 'admin']
+        role__name__in=['owner', 'admin'],
+        role__is_default=True
     ).exists()
 
     # Check if there are pending requests for this lab (for admin sidebar icon)
     has_pending_requests = LabMembership.objects.filter(
         lab=labspace,
-        role='pending'
+        role__name='pending',
+        role__is_default=True
     ).exists()
 
     context = {
@@ -147,7 +156,8 @@ def lab_join(request):
             LabMembership.objects.create(
                 lab=lab,
                 user=request.user,
-                role='pending'
+                role__name='pending',
+                role__is_default=True
             )
             print(f"LAB: {lab_code}")
             return redirect('labspaces:home')
@@ -170,7 +180,8 @@ def cancel_join_request(request):
         lab_request = LabMembership.objects.get(
             user=request.user,
             lab=lab,
-            role="pending",
+            role__name="pending",
+            role__is_default=True
         )
         print(f"FOUND LAB REQUEST: {lab_request}")
         lab_request.delete()
@@ -184,7 +195,7 @@ def pending_requests(request, code):
         return HttpResponseForbidden("You are not authorized to view this page")
     try:
         labspace = Lab.objects.get(code=code)
-        pending_requests = LabMembership.objects.filter(lab=labspace, role='pending')
+        pending_requests = LabMembership.objects.filter(lab=labspace, role__name='pending', role__is_default=True)
         return render(request, 'labspaces/admin-pending-requests.html', {
             'pending_requests': pending_requests,
             'labspace': labspace
@@ -200,8 +211,9 @@ def accept_request(request):
         membership_request = LabMembership.objects.get(id=request_id)
         labspace = membership_request.lab
         code = labspace.code
+        member_role = Role.objects.get(name='member', is_default=True, lab__isnull=True)
         if is_lab_admin(request.user, code):
-            membership_request.role = 'member'
+            membership_request.role = member_role
             membership_request.save()
             return redirect('labspaces:pending_requests', code=code)
         else:
@@ -229,7 +241,8 @@ def reject_request(request):
 def user_pending_labs(request):
     pending_labs = Lab.objects.filter(
         labmembership__user=request.user, 
-        labmembership__role='pending'
+        labmembership__role__name='pending',
+        role__is_default=True
         ).distinct()
     return render(request, 'labspaces/user_pending_labs.html', {'pending_labs': pending_labs})
 
@@ -248,7 +261,8 @@ def manage_members(request, code):
         # Get all members of the lab (excluding pending requests)
         lab_members = LabMembership.objects.filter(
             lab=labspace, 
-            role__in=['owner', 'admin', 'member', 'manager', 'researcher', 'guest']
+            role__name__in=['owner', 'admin', 'member', 'manager', 'researcher', 'guest'],
+            role__is_default=True
         ).select_related('user').order_by('role', 'user__username')
         
         # Apply search filters if form is valid
@@ -266,7 +280,7 @@ def manage_members(request, code):
             if last_name:
                 lab_members = lab_members.filter(user__last_name__icontains=last_name)
             if role:
-                lab_members = lab_members.filter(role=role)
+                lab_members = lab_members.filter(role__name=role)
         
         return render(request, 'labspaces/manage_members.html', {
             'labspace': labspace,
@@ -292,10 +306,13 @@ def remove_member(request, code):
         
         # Get the membership to remove
         membership = LabMembership.objects.get(id=member_id, lab=labspace)
+
+
         
         # Prevent removing the last owner
-        if membership.role == 'owner':
-            owner_count = LabMembership.objects.filter(lab=labspace, role='owner').count()
+        owner_role = Role.objects.get(name='owner', is_default=True, lab__isnull=True)
+        if membership.role == owner_role:
+            owner_count = LabMembership.objects.filter(lab=labspace, role__name='owner').count()
             if owner_count <= 1:
                 return HttpResponseForbidden("Cannot remove the last owner of the lab")
         
