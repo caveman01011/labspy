@@ -68,7 +68,7 @@
                         <li class="nav-item ">
                             <a class="nav-link {% if request.resolver_match.url_name == 'pending_requests' %}active{% endif %} " 
                                href="{% url 'labspaces:pending_requests' code=current_lab.code %}">
-                                <i class="bi bi-person-down"></i>
+                                <i class="bi bi-person-fill-down"></i>
                                 Pending requests
                                 {% if labspace.has_pending_requests %}<i class="bi bi-exclamation-circle-fill text-danger m-2"></i>{% endif %}
                             </a>

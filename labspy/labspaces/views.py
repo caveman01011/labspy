@@ -313,4 +313,4 @@ def remove_member(request, code):
 def manage_permissions(request, code):
     if not is_lab_admin(request.user, code):
         return HttpResponseForbidden("Access denied")
-    pass
+    return render(request, "labspaces/manage_permissions.html")
