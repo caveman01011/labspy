@@ -39,7 +39,7 @@
             <th scope="col">First name</th>
             <th scope="col">Last name</th>
             <th scope="col">Date joined</th>
-            <th scope="col">Role</th>
+            <th scope="col">Role<a class="link-small" href="{% url 'labspaces:manage_permissions' code=current_lab.code %}" > (Edit roles)</a></th>
             <th scope="col">Action</th> 
         </tr>
     </thead>
