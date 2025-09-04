@@ -79,5 +79,18 @@ class LabMembership(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.lab.name} - {self.role}"
+
+class LabLog(models.Model):
+    """
+    This model stores logs of different labspace-level events for each labspace to be reviewed later by admins.
+    """
+    lab = models.ForeignKey(Lab, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL)
+    action = models.CharField(max_length=255)
+    details = models.TextField(blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
     
 
