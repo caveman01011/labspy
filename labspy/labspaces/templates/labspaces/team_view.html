@@ -1,0 +1,124 @@
+{% extends 'labspaces/lab_layout.html' %}
+
+{% block title %}Team{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">
+                <i class="bi bi-people-fill"></i> Team Members
+            </h1>
+            <hr>
+        </div>
+    </div>
+
+    {% if members_by_role %}
+        <div class="row">
+            {% for role, members in members_by_role.items %}
+                <div class="col-lg-6 col-md-12 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-person-badge me-2"></i>
+                                {{ role.name|title }}s
+                                <span class="badge bg-light text-dark ms-2">{{ members.count }}</span>
+                            </h5>
+                            {% if role.description %}
+                                <small class="text-light">{{ role.description }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% for member in members %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-center p-3 border rounded">
+                                            <div class="flex-shrink-0">
+                                                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" 
+                                                     style="width: 50px; height: 50px;">
+                                                    <i class="bi bi-person text-white fs-4"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1 fw-bold">{{ member.user.get_full_name|default:member.user.username }}</h6>
+                                                <p class="mb-1 text-muted small">@{{ member.user.username }}</p>
+                                                <p class="mb-0 text-muted small">
+                                                    <i class="bi bi-calendar3 me-1"></i>
+                                                    Joined {{ member.created_at|date:"M Y" }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-people fs-1 text-muted mb-3"></i>
+                    <h4 class="text-muted">No team members found</h4>
+                    <p class="text-muted">This labspace doesn't have any members yet.</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Team Statistics -->
+    {% if members_by_role %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title text-muted mb-3">
+                            <i class="bi bi-graph-up me-2"></i>Team Overview
+                        </h6>
+                        <div class="row text-center">
+                            <div class="col-md-3 mb-2">
+                                <div class="p-3">
+                                    <h4 class="text-primary mb-1">
+                                        {% for role, members in members_by_role.items %}
+                                            {% if forloop.first %}{{ members.count }}{% endif %}
+                                        {% endfor %}
+                                    </h4>
+                                    <small class="text-muted">Total Members</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <div class="p-3">
+                                    <h4 class="text-success mb-1">{{ members_by_role|length }}</h4>
+                                    <small class="text-muted">Role Types</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <div class="p-3">
+                                    <h4 class="text-info mb-1">
+                                        {% for role, members in members_by_role.items %}
+                                            {% if role.name == 'owner' %}{{ members.count }}{% endif %}
+                                        {% endfor %}
+                                    </h4>
+                                    <small class="text-muted">Owners</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <div class="p-3">
+                                    <h4 class="text-warning mb-1">
+                                        {% for role, members in members_by_role.items %}
+                                            {% if role.name == 'manager' %}{{ members.count }}{% endif %}
+                                        {% endfor %}
+                                    </h4>
+                                    <small class="text-muted">Managers</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

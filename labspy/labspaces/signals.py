@@ -14,7 +14,7 @@ def log_membership_activity(sender, instance, created, **kwargs):
         LabLog.objects.create(
             lab=instance.lab,
             user=instance.user,
-            action="Member joined",
+            action="Member requested to join",
             details=f"User {instance.user.username} joined lab {instance.lab.name} with role {instance.role.name}."
         )
     else:
@@ -23,7 +23,7 @@ def log_membership_activity(sender, instance, created, **kwargs):
             lab=instance.lab,
             user=instance.user,
             action="Role changed",
-            details=f"User {instance.user.username} role changed to {instance.role.name} in lab {instance.lab.name}."
+            details=f"User {instance.user.username} role changed from {getattr(instance, '_previous_role_name', 'unknown')} to {instance.role.name} in lab {instance.lab.name}."
         )
 
 

@@ -120,7 +120,8 @@
                         </li>
                         
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'team_view' %}active{% endif %}" 
+                               href="{% if current_lab %}{% url 'labspaces:team_view' code=current_lab.code %}{% else %}#{% endif %}">
                                 <i class="bi bi-people"></i>
                                 Team
                             </a>

@@ -394,3 +394,49 @@ def activity_logs(request, code):
         logs = []
 
     return render(request, "labspaces/activity_logs.html", {'logs': logs})
+
+@login_required
+def team_view(request, code):
+    """
+    Display team members separated by role sections.
+    Accessible to any lab member.
+    """
+    try:
+        labspace = Lab.objects.get(code=code)
+    except Lab.DoesNotExist:
+        raise Http404("Lab not found")
+
+    # Check if the user is a member of the lab
+    is_member = LabMembership.objects.filter(
+        lab=labspace,
+        user=request.user,
+        role__name__in=['owner', 'manager', 'researcher', 'guest', 'member'],
+        role__is_default=True
+    ).exists()
+
+    if not is_member:
+        return HttpResponseForbidden("Access Denied.")
+
+    # Get all members grouped by role
+    members_by_role = {}
+    
+    # Get all roles for this lab (both default and lab-specific)
+    roles = Role.objects.filter(
+        Q(lab=labspace) | (Q(is_default=True) & Q(lab__isnull=True))
+    ).exclude(name='pending').order_by('name')
+    
+    for role in roles:
+        members = LabMembership.objects.filter(
+            lab=labspace,
+            role=role
+        ).select_related('user').order_by('user__username')
+        
+        if members.exists():
+            members_by_role[role] = members
+
+    context = {
+        'labspace': labspace,
+        'current_lab': labspace,
+        'members_by_role': members_by_role,
+    }
+    return render(request, 'labspaces/team_view.html', context)
