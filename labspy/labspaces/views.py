@@ -343,6 +343,8 @@ def manage_permissions(request, code):
 @login_required
 @require_POST
 def change_role(request):
+    if not is_lab_admin(request.user, request.POST.get('lab_code') or request.POST.get('code')):
+        return HttpResponseForbidden("You are not authorized to perform this action")
     membership_id = request.POST.get('membership_id')
     new_role_name = request.POST.get('new_role')
     if not membership_id or not new_role_name:
@@ -379,3 +381,17 @@ def change_role(request):
     membership.role = new_role
     membership.save()
     return redirect('labspaces:manage_permissions', code=lab.code)
+
+@login_required
+def activity_logs(request, code):
+    if not is_lab_admin(request.user, code):
+        return HttpResponseForbidden("You are not authorized to perform this action")
+    
+    try:
+        logs = LabLog.objects.filter(lab__code=code)
+    except Exception as e:
+        from django.contrib import messages
+        messages.error(request, f"Error retrieving activity logs: {str(e)}")
+        logs = []
+
+    return render(request, "labspaces/activity_logs.html", {'logs': logs})

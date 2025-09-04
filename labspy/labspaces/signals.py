@@ -15,7 +15,7 @@ def log_membership_activity(sender, instance, created, **kwargs):
             lab=instance.lab,
             user=instance.user,
             action="Member joined",
-            details=f"User '{instance.user.username}' joined lab '{instance.lab.name}' with role '{instance.role.name}'"
+            details=f"User {instance.user.username} joined lab {instance.lab.name} with role {instance.role.name}."
         )
     else:
         # Log when a member's role is changed
@@ -23,7 +23,7 @@ def log_membership_activity(sender, instance, created, **kwargs):
             lab=instance.lab,
             user=instance.user,
             action="Role changed",
-            details=f"User '{instance.user.username}' role changed to '{instance.role.name}' in lab '{instance.lab.name}'"
+            details=f"User {instance.user.username} role changed to {instance.role.name} in lab {instance.lab.name}."
         )
 
 
@@ -36,7 +36,7 @@ def log_membership_removal(sender, instance, **kwargs):
         lab=instance.lab,
         user=instance.user,
         action="Member removed",
-        details=f"User '{instance.user.username}' was removed from lab '{instance.lab.name}' (previous role: {instance.role.name})"
+        details=f"User {instance.user.username} was removed from lab {instance.lab.name} (previous role: {instance.role.name})."
     )
 
 

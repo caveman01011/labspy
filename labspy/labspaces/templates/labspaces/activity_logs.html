@@ -1,0 +1,43 @@
+{% extends "labspaces/lab_layout.html" %}
+
+{% block title %}Activity logs{% endblock %}
+
+{% block content %}
+<h1 class="text-center"><i class="bi bi-file-text"></i> Activity logs</h1>
+<hr>
+<div class="container mt-4">
+    {% if logs %}
+        {% regroup logs by timestamp.date as logs_by_day %}
+        {% for day in logs_by_day %}
+            <h5 class="mt-4 mb-3 text-secondary">
+                {{ day.grouper|date:"F j, Y" }}
+            </h5>
+            <ul class="list-group mb-2">
+                {% for log in day.list %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ log.action }}</strong>
+                            {% if log.details %}
+                                <br>
+                                <span class="text-muted small">{{ log.details }}</span>
+                            {% endif %}
+                            {% if log.user %}
+                                <br>
+                                <span class="text-info small">By: {{ log.user.get_full_name|default:log.user.username }}</span>
+                            {% endif %}
+                        </div>
+                        <span class="badge bg-light text-dark small">
+                            {{ log.timestamp|date:"H:i:s" }}
+                        </span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No logs for this day.</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info">No activity logs found.</div>
+    {% endif %}
+</div>
+
+{% endblock %}

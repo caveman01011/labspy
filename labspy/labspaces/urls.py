@@ -12,6 +12,7 @@ urlpatterns = [
     path('lab/<str:code>/pending_requests/', views.pending_requests, name='pending_requests'),
     path('lab/<str:code>/manage_members/', views.manage_members, name='manage_members'),
     path('lab/<str:code>/manage_permissions/', views.manage_permissions, name='manage_permissions'),
+    path('lab/<str:code>/activity_logs/', views.activity_logs, name='activity_logs'),
 
     #POST routes
     path('join_lab/', views.lab_join, name="lab_join"),
