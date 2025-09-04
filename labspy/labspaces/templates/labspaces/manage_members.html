@@ -53,7 +53,7 @@
             <td>{{ member.role.name|capfirst|truncatechars:16 }}</td>
             <td>
                 {% if member.role.name != 'owner' %}
-                <form action="{% url 'labspaces:remove_member' code=labspace.code %}" method="post" style="display:inline;">
+                <form action="{% url 'labspaces:remove_member' %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <input type="hidden" name="member_id" value="{{ member.id }}">
                     <button type="submit" class="btn btn-danger btn-sm" title="Remove member">

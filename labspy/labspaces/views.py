@@ -290,37 +290,32 @@ def manage_members(request, code):
 
 @login_required
 @require_POST
-def remove_member(request, code):
-    # Check if the user is an owner of the lab
-    if not is_lab_admin(request.user, code):
-        return HttpResponseForbidden("You are not authorized to perform this action")
-    
+def remove_member(request):
+    # Get membership and resolve labspace
+    member_id = request.POST.get('member_id')
+    if not member_id:
+        return HttpResponseForbidden("Member ID is required")
     try:
-        labspace = Lab.objects.get(code=code)
-        member_id = request.POST.get('member_id')
-        
-        if not member_id:
-            return HttpResponseForbidden("Member ID is required")
-        
-        # Get the membership to remove
-        membership = LabMembership.objects.get(id=member_id, lab=labspace)
-        
-        # Prevent removing the last owner
-        owner_role = Role.objects.get(name='owner', is_default=True, lab__isnull=True)
-        if membership.role == owner_role:
-            owner_count = LabMembership.objects.filter(lab=labspace, role__name='owner').count()
-            if owner_count <= 1:
-                return HttpResponseForbidden("Cannot remove the last owner of the lab")
-        
-        # Remove the membership
-        membership.delete()
-        
-        return redirect('labspaces:manage_members', code=code)
-        
-    except Lab.DoesNotExist:
-        raise Http404("Lab not found")
+        membership = LabMembership.objects.select_related('lab').get(id=member_id)
+        labspace = membership.lab
     except LabMembership.DoesNotExist:
         raise Http404("Member not found")
+
+    # Check if the user is an owner/admin of the lab
+    if not is_lab_admin(request.user, labspace.code):
+        return HttpResponseForbidden("You are not authorized to perform this action")
+
+    # Prevent removing the last owner
+    owner_role = Role.objects.get(name='owner', is_default=True, lab__isnull=True)
+    if membership.role == owner_role:
+        owner_count = LabMembership.objects.filter(lab=labspace, role__name='owner').count()
+        if owner_count <= 1:
+            return HttpResponseForbidden("Cannot remove the last owner of the lab")
+
+    # Remove the membership
+    membership.delete()
+
+    return redirect('labspaces:manage_members', code=labspace.code)
 
 @login_required
 def manage_permissions(request, code):
@@ -332,12 +327,51 @@ def manage_permissions(request, code):
         members = LabMembership.objects.filter(lab__code=code, role=role).select_related('user')
         roles_with_members.append({
             'role': role,
-            'members': [membership.user for membership in members]
+            'members': members
         })
     context = {
         'roles_with_members': roles_with_members,
         'labspace': Lab.objects.get(code=code),
+        'all_roles': roles,
     }
     print(f"ROLES FOUND: {roles}")
     print(f"MEMBERS FOUND: {roles_with_members}")
     return render(request, "labspaces/manage_permissions.html", context)
+
+@login_required
+@require_POST
+def change_role(request):
+    membership_id = request.POST.get('membership_id')
+    new_role_name = request.POST.get('new_role')
+    if not membership_id or not new_role_name:
+        return HttpResponseNotAllowed("Missing parameters")
+
+    # Resolve membership and lab
+    try:
+        membership = LabMembership.objects.select_related('lab').get(id=membership_id)
+        lab = membership.lab
+    except LabMembership.DoesNotExist:
+        raise Http404("Membership not found")
+
+    # Permission check
+    if not is_lab_admin(request.user, lab.code):
+        return HttpResponseForbidden("You are not authorized to perform this action")
+
+    # Resolve the new role (either default-global or lab-specific)
+    try:
+        new_role = Role.objects.get(
+            Q(name=new_role_name) & (Q(is_default=True, lab__isnull=True) | Q(lab=lab))
+        )
+    except Role.DoesNotExist:
+        raise Http404("Role not found")
+
+    # Prevent removing the last owner by demoting the only owner
+    owner_role = Role.objects.get(name='owner', is_default=True, lab__isnull=True)
+    if membership.role == owner_role and new_role != owner_role:
+        owner_count = LabMembership.objects.filter(lab=lab, role=owner_role).count()
+        if owner_count <= 1:
+            return HttpResponseForbidden("Cannot change role of the last owner of the lab")
+
+    membership.role = new_role
+    membership.save()
+    return redirect('labspaces:manage_permissions', code=lab.code)

@@ -1,4 +1,5 @@
 {% extends "labspaces/lab_layout.html" %}
+{% load static %}
 {% block title %}Roles & Permissions{% endblock %}
 
 {% block content %}
@@ -22,9 +23,60 @@
                 <td class="text-muted">{{ item.role.description|truncatechars:96 }}</td>
                 <td class="text-center">{{ item.members|length }}</td>
                 <td>
-                    <button class="btn btn-outline-primary btn-sm" style="width: 120px;" disabled>
-                        View {{ item.role.name|capfirst|truncatechars:16 }}{% if item.role.name|lower != "guest" and item.role.name|lower != "owner" and item.role.name|lower != "manager" and item.role.name|lower != "member" %}s{% else %}s{% endif %}
+                    {# Toggle button to view members of this role #}
+                    <button type="button" class="btn btn-outline-primary btn-sm view-role-btn" style="width: 120px;" data-target="role-table-{{ item.role.name|slugify }}">
+                        View {{ item.role.name|capfirst|truncatechars:16 }}s
                     </button>
+                </td>
+            </tr>
+            <tr id="role-table-{{ item.role.name|slugify }}" class="d-none">
+                <td colspan="4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <strong>{{ item.role.name|capfirst }}s</strong>
+                            <button type="button" class="btn btn-link text-decoration-none hide-role-btn" data-target="role-table-{{ item.role.name|slugify }}">
+                                Hide
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table mb-0">
+                                    <tbody>
+                                        {% for member in item.members %}
+                                        <tr>
+                                            <td>
+                                                {{ member.user.get_full_name|default:member.user.username }}
+                                                <span class="text-muted">(@{{ member.user.username }})</span>
+                                            </td>
+                                            <td class="text-end">
+                                                <form method="post" action="{% url 'labspaces:change_role' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="membership_id" value="{{ member.id }}">
+                                                    <div class="btn-group position-static">
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                                                            Change role
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            {% for role in all_roles %}
+                                                            <li>
+                                                                <button type="submit" class="dropdown-item" name="new_role" value="{{ role.name }}">{{ role.name|capfirst }}</button>
+                                                            </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td class="text-muted">No users in this role.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
             {% empty %}
@@ -35,6 +87,8 @@
         </tbody>
     </table>
 </div>
+
+<script src="{% static 'labspaces/roles.js' %}"></script>
 
 
 {% endblock %}

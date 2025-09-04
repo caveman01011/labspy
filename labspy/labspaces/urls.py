@@ -18,5 +18,6 @@ urlpatterns = [
     path('cancel_join_request/', views.cancel_join_request, name="cancel_join_request"),
     path('accept_request/', views.accept_request, name='accept_request'),
     path('reject_request/', views.reject_request, name='reject_request'),
-    path('lab/<str:code>/remove_member/', views.remove_member, name='remove_member'),
+    path('remove_member/', views.remove_member, name='remove_member'),
+    path('change_role/', views.change_role, name='change_role'),
 ]
