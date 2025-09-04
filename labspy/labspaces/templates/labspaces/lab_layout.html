@@ -90,7 +90,7 @@
                         </li>
                         
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'activity_logs' %}active{% endif %}" href="{% url 'labspaces:activity_logs' code=current_lab.code %}">
                                 <i class="bi bi-file-text"></i>
                                 Activity logs
                             </a>

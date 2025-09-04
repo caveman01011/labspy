@@ -58,6 +58,7 @@
                                                         </button>
                                                         <ul class="dropdown-menu dropdown-menu-end">
                                                             {% for role in all_roles %}
+                                                            <input type="hidden" name="lab_code" value="{{current_lab.code}}">
                                                             <li>
                                                                 <button type="submit" class="dropdown-item" name="new_role" value="{{ role.name }}">{{ role.name|capfirst }}</button>
                                                             </li>

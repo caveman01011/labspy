@@ -5,7 +5,7 @@ from django.views.decorators.http import require_POST
 from django.urls import resolve
 from django.db.models import Q
 
-from .models import Lab, LabMembership, Role
+from .models import Lab, LabMembership, Role, LabLog
 from .forms import LabCreationForm, LabJoinForm, UserManagementSearchForm
 
 #Role validation tests
@@ -50,7 +50,7 @@ def home(request):
     # Get labs where user is owner or member (exclude pending)
     user_labs_qs = Lab.objects.filter(
         labmembership__user=request.user,
-        labmembership__role__name__in=["owner", "member"],
+        labmembership__role__name__in=["owner", "member", "manager", "guest"],
         labmembership__role__is_default=True
     ).distinct()
     user_labs = list(user_labs_qs)
@@ -343,7 +343,7 @@ def manage_permissions(request, code):
 @login_required
 @require_POST
 def change_role(request):
-    if not is_lab_admin(request.user, request.POST.get('lab_code') or request.POST.get('code')):
+    if not is_lab_admin(request.user, request.POST.get('lab_code')):
         return HttpResponseForbidden("You are not authorized to perform this action")
     membership_id = request.POST.get('membership_id')
     new_role_name = request.POST.get('new_role')
@@ -390,8 +390,7 @@ def activity_logs(request, code):
     try:
         logs = LabLog.objects.filter(lab__code=code)
     except Exception as e:
-        from django.contrib import messages
-        messages.error(request, f"Error retrieving activity logs: {str(e)}")
+        print(f"Logs query failed {e}")
         logs = []
 
     return render(request, "labspaces/activity_logs.html", {'logs': logs})
