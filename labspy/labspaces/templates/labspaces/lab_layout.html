@@ -34,8 +34,6 @@
             <a class="navbar-brand fw-bold" href="{% url 'labspaces:home' %}">
                 <img src="{% static 'spy/labspy-mark-nobg.png' %}" alt="LabSpy" class="logo">
             </a>
-            
-            <h1>{{user}} || {{user_is_admin}}</h1>
 
             <!-- Navbar Items -->
             <div class="navbar-nav ms-auto">
@@ -94,7 +92,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <i class="bi bi-file-text"></i>
-                                Admin logs
+                                Activity logs
                             </a>
                         </li>
 
@@ -157,59 +155,24 @@
 
             <!-- Main Content -->
             <main class="col-lg-9 col-md-8 col-sm-12 main-content">
+                {% if messages %}
+                <div class="d-flex justify-content-center mt-3 mb-3">
+                    <div class="w-100" style="max-width: 740px;">
+                        {% for message in messages %}
+                            {% if message.tags == "error" or "danger" in message.tags %}
+                            <div class="alert alert-danger alert-dismissible fade show mb-2" role="alert" style="border-radius: 0.5rem;">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
                 <div class="content-wrapper">
                     {% block content %}
-                    <!-- Default content -->
-                    <div class="row">
-                        <div class="col-12">
-                            <h1 class="mb-4">Welcome to LabSpy</h1>
-                            <p class="lead">Your laboratory management dashboard</p>
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-md-6 col-lg-3 mb-3">
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-flask text-primary fs-1 mb-3"></i>
-                                    <h5 class="card-title">Experiments</h5>
-                                    <p class="card-text text-muted">Manage your experiments</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6 col-lg-3 mb-3">
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-graph-up text-success fs-1 mb-3"></i>
-                                    <h5 class="card-title">Results</h5>
-                                    <p class="card-text text-muted">View experiment results</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6 col-lg-3 mb-3">
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-calendar3 text-warning fs-1 mb-3"></i>
-                                    <h5 class="card-title">Schedule</h5>
-                                    <p class="card-text text-muted">Plan your experiments</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6 col-lg-3 mb-3">
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-people text-info fs-1 mb-3"></i>
-                                    <h5 class="card-title">Team</h5>
-                                    <p class="card-text text-muted">Manage your team</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     {% endblock %}
-                </div>
+                </div>            
             </main>
         </div>
     </div>

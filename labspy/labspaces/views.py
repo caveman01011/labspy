@@ -8,6 +8,7 @@ from django.db.models import Q
 from .models import Lab, LabMembership, Role
 from .forms import LabCreationForm, LabJoinForm, UserManagementSearchForm
 
+#Role validation tests
 def is_lab_admin(user, lab_code):
     """
     Check if a user is an admin (owner) of a specific lab.
@@ -22,10 +23,11 @@ def is_lab_admin(user, lab_code):
     try:
         lab = Lab.objects.get(code=lab_code)
         owner_role = Role.objects.get(name='owner', is_default=True, lab__isnull=True)
+        manager_role = Role.objects.get(name='manager', is_default=True, lab__isnull=True)
         return LabMembership.objects.filter(
             lab=lab, 
             user=user, 
-            role=owner_role
+            role__in=[owner_role, manager_role]
         ).exists()
     except Lab.DoesNotExist:
         return False
@@ -370,7 +372,9 @@ def change_role(request):
     if membership.role == owner_role and new_role != owner_role:
         owner_count = LabMembership.objects.filter(lab=lab, role=owner_role).count()
         if owner_count <= 1:
-            return HttpResponseForbidden("Cannot change role of the last owner of the lab")
+            from django.contrib import messages
+            messages.error(request, "Cannot change role of the last owner of the lab")
+            return redirect('labspaces:manage_permissions', code=lab.code)
 
     membership.role = new_role
     membership.save()
