@@ -4,5 +4,37 @@
 {% block content %}
 <h1 class="text-center"><i class="bi bi-shield-check"></i> Permissions & Roles</h1>
 <hr>
+<h2>Labspace roles</h2>
+<div class="table-responsive" style="max-height: 610px; overflow-y: auto;">
+    <table class="table table-hover border mb-0">
+        <thead>
+            <tr>
+                <th scope="col">Role</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="text-center">Number of Users</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in roles_with_members %}
+            <tr>
+                <td>{{ item.role.name|capfirst|truncatechars:16 }}</td>
+                <td class="text-muted">{{ item.role.description|truncatechars:96 }}</td>
+                <td class="text-center">{{ item.members|length }}</td>
+                <td>
+                    <button class="btn btn-outline-primary btn-sm" style="width: 120px;" disabled>
+                        View {{ item.role.name|capfirst|truncatechars:16 }}{% if item.role.name|lower != "guest" and item.role.name|lower != "owner" and item.role.name|lower != "manager" and item.role.name|lower != "member" %}s{% else %}s{% endif %}
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No roles found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 
 {% endblock %}

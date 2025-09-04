@@ -50,9 +50,9 @@
             <td>{{ member.user.first_name|default:"-"|truncatechars:16 }}</td>
             <td>{{ member.user.last_name|default:"-"|truncatechars:16 }}</td>
             <td>{{ member.created_at|date:"Y-m-d" }}</td>
-            <td>{{ member.get_role_display|truncatechars:16 }}</td>
+            <td>{{ member.role.name|capfirst|truncatechars:16 }}</td>
             <td>
-                {% if member.role != 'owner' %}
+                {% if member.role.name != 'owner' %}
                 <form action="{% url 'labspaces:remove_member' code=labspace.code %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <input type="hidden" name="member_id" value="{{ member.id }}">
@@ -61,7 +61,7 @@
                     </button>
                 </form>
                 {% else %}
-                <span class="text-muted">Owner</span>
+                <span class="text-muted">Can't remove owner</span>
                 {% endif %}
             </td>
         </tr>

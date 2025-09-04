@@ -83,8 +83,7 @@ def lab_create(request):
             LabMembership.objects.create(
                 lab=form.instance,
                 user=request.user,
-                role__name='owner',
-                role__is_default=True
+                role=Role.objects.get(name='owner', is_default=True, lab__isnull=True)
             )
             return redirect('labspaces:labspace_view', code=form.instance.code)
     else:
@@ -156,8 +155,7 @@ def lab_join(request):
             LabMembership.objects.create(
                 lab=lab,
                 user=request.user,
-                role__name='pending',
-                role__is_default=True
+                role=Role.objects.get(name='pending', is_default=True, lab__isnull=True)
             )
             print(f"LAB: {lab_code}")
             return redirect('labspaces:home')
@@ -242,7 +240,7 @@ def user_pending_labs(request):
     pending_labs = Lab.objects.filter(
         labmembership__user=request.user, 
         labmembership__role__name='pending',
-        role__is_default=True
+        labmembership__role__is_default=True
         ).distinct()
     return render(request, 'labspaces/user_pending_labs.html', {'pending_labs': pending_labs})
 
@@ -261,7 +259,7 @@ def manage_members(request, code):
         # Get all members of the lab (excluding pending requests)
         lab_members = LabMembership.objects.filter(
             lab=labspace, 
-            role__name__in=['owner', 'admin', 'member', 'manager', 'researcher', 'guest'],
+            role__name__in=['owner', 'member', 'manager', 'guest'],
             role__is_default=True
         ).select_related('user').order_by('role', 'user__username')
         
@@ -280,7 +278,7 @@ def manage_members(request, code):
             if last_name:
                 lab_members = lab_members.filter(user__last_name__icontains=last_name)
             if role:
-                lab_members = lab_members.filter(role__name=role)
+                lab_members = lab_members.filter(role__name__iexact=role)
         
         return render(request, 'labspaces/manage_members.html', {
             'labspace': labspace,
@@ -306,8 +304,6 @@ def remove_member(request, code):
         
         # Get the membership to remove
         membership = LabMembership.objects.get(id=member_id, lab=labspace)
-
-
         
         # Prevent removing the last owner
         owner_role = Role.objects.get(name='owner', is_default=True, lab__isnull=True)
@@ -330,4 +326,18 @@ def remove_member(request, code):
 def manage_permissions(request, code):
     if not is_lab_admin(request.user, code):
         return HttpResponseForbidden("Access denied")
-    return render(request, "labspaces/manage_permissions.html")
+    roles = Role.objects.filter(Q(lab__code=code) | (Q(is_default=True) & Q(lab__isnull=True)))
+    roles_with_members = []
+    for role in roles:
+        members = LabMembership.objects.filter(lab__code=code, role=role).select_related('user')
+        roles_with_members.append({
+            'role': role,
+            'members': [membership.user for membership in members]
+        })
+    context = {
+        'roles_with_members': roles_with_members,
+        'labspace': Lab.objects.get(code=code),
+    }
+    print(f"ROLES FOUND: {roles}")
+    print(f"MEMBERS FOUND: {roles_with_members}")
+    return render(request, "labspaces/manage_permissions.html", context)

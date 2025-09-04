@@ -19,7 +19,7 @@ def lab_admin_status(request):
                 try:
                     lab = Lab.objects.get(code=lab_code)
                     # Check if user is admin of this lab
-                    owner_role = Role.objects.get(name='Owner', is_default=True, lab__isnull=True)
+                    owner_role = Role.objects.get(name='owner', is_default=True, lab__isnull=True)
                     is_admin = LabMembership.objects.filter(
                         lab=lab, 
                         user=request.user, 

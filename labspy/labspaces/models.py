@@ -1,7 +1,10 @@
 from django.db import models
-from users.models import CustomUser
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.db.models import Q
+
+
+from users.models import CustomUser
 
 import random
 import string
@@ -24,7 +27,7 @@ class Lab(models.Model):
         Returns True if there are any pending join requests for this lab.
         """
         try:
-            pending_role = Role.objects.get(name='Pending', is_default=True, lab__isnull=True)
+            pending_role = Role.objects.get(name='pending', is_default=True, lab__isnull=True)
             return LabMembership.objects.filter(lab=self, role=pending_role).exists()
         except Role.DoesNotExist:
             return False
