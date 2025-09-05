@@ -3,6 +3,11 @@ from django.db import models
 # Create your models here.
 
 class Equipment(models.Model):
+
+    """
+    Equipment model represents an item in the laboratory's inventory.
+    """
+
     CATEGORY_CHOICES = [
         ("general", "General Lab Equipment"),
         ("glassware", "Glassware & Plastics"),

@@ -5,7 +5,7 @@
 {% block content %}
 <h1 class="text-center"><i class="bi bi-file-text"></i> Activity logs</h1>
 <hr>
-<div class="container mt-4">
+<div class="container mt-4" style="max-height: 500px; overflow-y: auto;">
     {% if logs %}
         {% regroup logs by timestamp.date as logs_by_day %}
         {% for day in logs_by_day %}
